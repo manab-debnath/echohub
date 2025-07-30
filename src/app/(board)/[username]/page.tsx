@@ -1,9 +1,35 @@
 import Feed from "@/components/Feed";
+import FollowButton from "@/components/FollowButton";
+import { prisma } from "@/prisma";
+import { auth } from "@clerk/nextjs/server";
 import { Image } from "@imagekit/next";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import React from "react";
+import { format } from "timeago.js";
 
-const UserPage = () => {
+const UserPage = async ({
+	params,
+}: {
+	params: Promise<{ username: string }>;
+}) => {
+	const username = (await params).username;
+	const { userId } = await auth();
+
+	const user = await prisma.user.findUnique({
+		where: {
+			username: username,
+		},
+		include: {
+			_count: { select: { followers: true, followings: true } },
+			followings: userId ? { where: { followerId: userId } } : undefined,
+		},
+	});
+
+	if (!user) return notFound();
+
+	// console.log("username", user);
+
 	return (
 		<div className="">
 			{/* PROFILE TITLE */}
@@ -25,7 +51,7 @@ const UserPage = () => {
 					{/* COVER */}
 					<div className="w-full aspect-[3/1] relative">
 						<Image
-							src="/EchoHub/general/cover.jpg"
+							src={user.coverImage || "/EchoHub/general/noCover.jpg"}
 							alt="cover"
 							fill
 							transformation={[{ width: 600, height: 200 }]}
@@ -34,7 +60,7 @@ const UserPage = () => {
 					{/* AVATAR */}
 					<div className="w-1/5 aspect-square absolute left-4 -translate-y-1/2 border-4 border-black bg-gray-300 rounded-full overflow-hidden">
 						<Image
-							src="/EchoHub/general/avatar.png"
+							src={user.image || "/EchoHub/general/noAvatar.png"}
 							alt="cover"
 							fill
 							transformation={[{ width: 100, height: 100 }]}
@@ -66,29 +92,34 @@ const UserPage = () => {
 							height={20}
 						/>
 					</div>
-					<button className="py-2 px-4 bg-white text-black font-bold rounded-full cursor-pointer">
-						Follow
-					</button>
+					{userId && (
+						<FollowButton
+							userId={user.id}
+							isFollowed={!!user.followings.length}
+						/>
+					)}
 				</div>
 				{/* USER DETAILS */}
 				<div className="p-4 flex flex-col gap-2">
 					{/* USERNAME & HANDLE */}
 					<div className="">
-						<h1 className="font-bold text-2xl">Lama Dev</h1>
-						<span className="text-textGray text-sm">@lamaWebDev</span>
+						<h1 className="font-bold text-2xl">{user.displayName}</h1>
+						<span className="text-textGray text-sm">@{user.username}</span>
 					</div>
-					<p>Lama Dev YouTube Channel </p>
+					{user.bio && <p>{user.bio} </p>}
 					{/* JOB & LOCATION & DATE */}
 					<div className="flex gap-4 text-textGray text-[15px]">
-						<div className="flex items-center gap-2">
-							<Image
-								src="/EchoHub/icons/userLocation.svg"
-								alt="location"
-								width={20}
-								height={20}
-							/>
-							<span>India</span>
-						</div>
+						{user.location && (
+							<div className="flex items-center gap-2">
+								<Image
+									src="/EchoHub/icons/userLocation.svg"
+									alt="location"
+									width={20}
+									height={20}
+								/>
+								<span>{user.location}</span>
+							</div>
+						)}
 						<div className="flex items-center gap-2">
 							<Image
 								src="/EchoHub/icons/date.svg"
@@ -96,24 +127,30 @@ const UserPage = () => {
 								width={20}
 								height={20}
 							/>
-							<span>Joined Sep 2021</span>
+							<span>
+								Joined{" "}
+								{new Date(user.createdAt.toString()).toLocaleDateString(
+									"en-US",
+									{ month: "long", year: "numeric" }
+								)}
+							</span>
 						</div>
 					</div>
 					{/* FOLLOWINGS & FOLLOWERS */}
 					<div className="flex items-center gap-4">
 						<div className="flex gap-2 items-center">
-							<span className="font-bold">100</span>
+							<span className="font-bold">{user._count.followers}</span>
 							<span className="text-textGray text-[15px]">Followers</span>
 						</div>
 						<div className="flex gap-2 items-center">
-							<span className="font-bold">10K</span>
+							<span className="font-bold">{user._count.followings}</span>
 							<span className="text-textGray text-[15px]">Followings</span>
 						</div>
 					</div>
 				</div>
 			</div>
 			{/* FEEDS */}
-			<Feed />
+			<Feed userProfileId={user.id} />
 		</div>
 	);
 };

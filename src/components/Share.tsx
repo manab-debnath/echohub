@@ -1,10 +1,11 @@
 "use client";
 
-import { shareAction } from "@/actions";
+import { addPost } from "@/action";
 import { Image } from "@imagekit/next";
 import NextImage from "next/image";
-import React, { useState } from "react";
+import React, { useActionState, useEffect, useRef, useState } from "react";
 import ImageEditor from "./ImageEditor";
+import { useUser } from "@clerk/nextjs";
 
 const Share = () => {
 	const [media, setMedia] = useState<File | null>(null);
@@ -16,7 +17,7 @@ const Share = () => {
 		type: "original",
 		sensitive: false,
 	});
-	console.log(media);
+	console.log("media", media);
 
 	const handleMediaChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		if (e.target.files && e.target.files[0]) {
@@ -26,15 +27,28 @@ const Share = () => {
 
 	const previewURL = media ? URL.createObjectURL(media) : null;
 
+	const { user } = useUser();
+	const [state, formAction, isPending] = useActionState(addPost, {
+		success: false,
+		error: false,
+	});
+
+	const formRef = useRef<HTMLFormElement | null>(null);
+
+	useEffect(() => {
+		if (state.success) {
+			formRef.current?.reset();
+			setMedia(null);
+			setSettings({ type: "original", sensitive: false });
+		}
+	}, [state]);
+
 	return (
-		<form
-			className="p-4 flex gap-4"
-			action={(formData) => shareAction(formData, settings)}
-		>
+		<form ref={formRef} className="p-4 flex gap-4" action={formAction}>
 			{/* AVATAR */}
 			<div className="relative w-10 h-10 rounded-full overflow-hidden">
 				<Image
-					src="/EchoHub/general/avatar.png"
+					src={user?.imageUrl || "/EchoHub/general/avatar.png"}
 					alt=""
 					fill
 					transformation={[{ width: 100, height: 100 }]}
@@ -42,6 +56,20 @@ const Share = () => {
 			</div>
 			{/* OTHERS */}
 			<div className="flex flex-col flex-1 gap-4">
+				<input
+					type="text"
+					name="imageType"
+					value={settings.type}
+					hidden
+					readOnly
+				/>
+				<input
+					type="text"
+					name="isSensitive"
+					value={settings.sensitive ? "true" : "false"}
+					hidden
+					readOnly
+				/>
 				<input
 					type="text"
 					name="desc"
@@ -174,9 +202,15 @@ const Share = () => {
 						/>
 					</div>
 					{/* BUTTON */}
-					<button className="bg-white text-black font-bold rounded-full px-4 py-2 cursor-pointer">
-						Post
+					<button
+						className="bg-white text-black font-bold rounded-full px-4 py-2 cursor-pointer disabled:cursor-not-allowed"
+						disabled={isPending}
+					>
+						{isPending ? "Posting" : "Post"}
 					</button>
+					{state.error && (
+						<span className="text-red-300 p-4">Something went wrong!</span>
+					)}
 				</div>
 			</div>
 		</form>

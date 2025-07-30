@@ -1,11 +1,13 @@
 import { Image } from "@imagekit/next";
 import Link from "next/link";
 import React from "react";
+import Socket from "./Socket";
+import Notification from "./Notification";
 
 const menuList = [
-	{ id: 1, name: "HomePage", link: "/", icon: "home.svg" },
+	{ id: 1, name: "Home", link: "/", icon: "home.svg" },
 	{ id: 2, name: "Explore", link: "/", icon: "explore.svg" },
-	{ id: 3, name: "Notification", link: "/", icon: "notification.svg" },
+	// { id: 3, name: "Notification", link: "/", icon: "notification.svg" },
 	{ id: 4, name: "Message", link: "/", icon: "message.svg" },
 	{ id: 5, name: "Bookmarks", link: "/", icon: "bookmark.svg" },
 	{ id: 6, name: "Jobs", link: "/", icon: "job.svg" },
@@ -31,20 +33,26 @@ const LeftBar = () => {
 				</Link>
 				{/* MENU LIST */}
 				<div className="flex flex-col gap-4">
-					{menuList.map((item) => (
-						<Link
-							href={item.link}
-							key={item.id}
-							className="p-2 rounded-full hover:bg-[#181818] flex items-center gap-4"
-						>
-							<Image
-								src={`/EchoHub/icons/${item.icon}`}
-								width={24}
-								height={24}
-								alt={item.name}
-							/>
-							<span className="hidden xxl:inline">{item.name}</span>
-						</Link>
+					{menuList.map((item, index) => (
+						<div key={item.id || index}>
+							{index === 2 && (
+								<div>
+									<Notification />
+								</div>
+							)}
+							<Link
+								href={item.link}
+								className="p-2 rounded-full hover:bg-[#181818] flex items-center gap-4"
+							>
+								<Image
+									src={`/EchoHub/icons/${item.icon}`}
+									width={24}
+									height={24}
+									alt={item.name}
+								/>
+								<span className="hidden xxl:inline">{item.name}</span>
+							</Link>
+						</div>
 					))}
 				</div>
 				{/* BUTTON */}
@@ -52,7 +60,12 @@ const LeftBar = () => {
 					href="/compose/post"
 					className="bg-white text-black rounded-full w-12 h-12 flex items-center justify-center xxl:hidden"
 				>
-					<Image src="/icons/post.svg" width={24} height={24} alt="new post" />
+					<Image
+						src="/EchoHub/icons/post.svg"
+						width={24}
+						height={24}
+						alt="new post"
+					/>
 				</Link>
 				<Link
 					href="/compose/post"
@@ -61,6 +74,7 @@ const LeftBar = () => {
 					Post
 				</Link>
 			</div>
+			<Socket />
 			{/* USER */}
 			<div className="flex items-center justify-between rounded-full cursor-pointer xxl:hover:bg-[#181818]">
 				<div className="flex items-center gap-2 xxl:m-4">

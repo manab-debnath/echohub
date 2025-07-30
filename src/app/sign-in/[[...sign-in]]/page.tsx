@@ -75,11 +75,14 @@ const SignInPage = () => {
 							Continue
 						</SignIn.Action>
 					</SignIn.Step>
+					<SignIn.Step name="sso-callback">
+						<SignIn.Captcha />
+					</SignIn.Step>
 					<SignIn.Step name="verifications">
 						<SignIn.Strategy name="password">
 							<Clerk.Field name="password" className="flex flex-col gap-2">
 								<Clerk.Input
-									placeholder="password"
+									placeholder="Password"
 									className="py-2 px-6 bg-white text-black w-72 placeholder:text-sm rounded-full outline-none"
 								/>
 								<Clerk.FieldError className="text-red-300 text-sm" />
