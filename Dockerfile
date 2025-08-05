@@ -14,14 +14,13 @@ RUN npm ci
 # Copy the rest of your application source code
 COPY . .
 
-# Build the Next.js application for production
-# This creates an optimized build in the .next folder
-RUN npm run db:generate
-# RUN --mount=type=secret,id=clerk_key \  
-#    NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=$(cat /run/secrets/clerk_key) npm run build
-
+# Accept the build-time Clerk publishable key
 ARG NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
+
+# Set it as an environment variable for use during build
 ENV NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=$NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
+
+RUN npm run db:generate
 RUN npm run build
 
 # ---- Stage 2: Production ----
