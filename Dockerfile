@@ -17,8 +17,11 @@ COPY . .
 # Build the Next.js application for production
 # This creates an optimized build in the .next folder
 RUN npm run db:generate
-RUN --mount=type=secret,id=clerk_key \  
-    NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=$(cat /run/secrets/clerk_key) npm run build
+# RUN --mount=type=secret,id=clerk_key \  
+#    NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=$(cat /run/secrets/clerk_key) npm run build
+
+ARG NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
+RUN NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=$NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY npm run build
 
 # ---- Stage 2: Production ----
 # Use a smaller, clean Node.js image for the final image
