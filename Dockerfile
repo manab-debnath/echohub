@@ -21,7 +21,8 @@ RUN npm run db:generate
 #    NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=$(cat /run/secrets/clerk_key) npm run build
 
 ARG NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
-RUN NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=$NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY npm run build
+ENV NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=$NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
+RUN npm run build
 
 # ---- Stage 2: Production ----
 # Use a smaller, clean Node.js image for the final image
