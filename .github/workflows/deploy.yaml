@@ -25,6 +25,8 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: manabdebnath/echohub:latest
+          build-args: |
+            NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=${{ secrets.CLERK_PUBLISHABLE_KEY }}
 
       - name: Verify Pushed Image
         run: docker pull manabdebnath/echohub:latest
