@@ -5,14 +5,15 @@ import { ImageKitProvider } from "@imagekit/next";
 import { ClerkProvider } from "@clerk/nextjs";
 import QueryProvider from "@/providers/QueryProvider";
 
-
 export default function RootLayout({
 	children,
 }: Readonly<{
 	children: React.ReactNode;
 }>) {
 	return (
-		<ClerkProvider>
+		<ClerkProvider
+			publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}
+		>
 			<QueryProvider>
 				<html lang="en" suppressHydrationWarning>
 					<body>

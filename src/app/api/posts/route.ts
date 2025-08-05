@@ -2,6 +2,10 @@ import { prisma } from "@/prisma";
 import { auth } from "@clerk/nextjs/server";
 import { NextRequest } from "next/server";
 
+type FollowType = {
+	followingId: string
+}
+
 export async function GET(req: NextRequest) {
 	const searchParams = req.nextUrl.searchParams;
 
@@ -27,7 +31,7 @@ export async function GET(req: NextRequest) {
 									where: { followerId: userId },
 									select: { followingId: true },
 								})
-							).map((follow) => follow.followingId),
+							).map((follow: FollowType) => follow.followingId),
 						],
 					},
 			  };

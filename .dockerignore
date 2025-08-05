@@ -1,0 +1,27 @@
+# Dependency directories
+node_modules
+
+# Git
+.git
+.gitignore
+
+# Environment variables
+.env
+.env.local
+.env*
+
+# Next.js build output (we build it inside the container)
+.next
+
+# Development environment
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Other
+README.md
+Dockerfile
+.dockerignore
+
+# secrets
+clerk_key.txt

@@ -5,9 +5,10 @@
 	"type": "module",
 	"scripts": {
 		"dev": "node server.js",
-		"start": "next start",
+		"start": "NODE_ENV=production node server.js",
 		"build": "next build",
-		"lint": "next lint"
+		"lint": "next lint",
+		"db:generate": "npx prisma generate"
 	},
 	"dependencies": {
 		"@clerk/elements": "^0.23.43",
@@ -34,6 +35,7 @@
 		"@types/node": "^20",
 		"@types/react": "^19",
 		"@types/react-dom": "^19",
+		"dotenv-cli": "^10.0.0",
 		"eslint": "^9",
 		"eslint-config-next": "15.3.5",
 		"tailwindcss": "^4",
