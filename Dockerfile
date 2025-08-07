@@ -19,6 +19,7 @@ ARG NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
 
 # Set it as an environment variable for use during build
 ENV NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=$NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
+ENV NODE_ENV=production
 
 RUN npm run db:generate
 RUN npm run build
