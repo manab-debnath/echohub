@@ -45,6 +45,13 @@ jobs:
               --name web-app \
               --restart unless-stopped \
               -p 3005:3000 \
+              -e NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT=${{ secrets.IMAGEKIT_URL_ENDPOINT }} \
+              -e NEXT_PUBLIC_IMAGEKIT_PUBLIC_KEY=${{ secrets.IMAGEKIT_PUBLIC_KEY }} \
+              -e PRIVATE_KEY=${{ secrets.PRIVATE_KEY }} \
+              -e DATABASE_URL=${{ secrets.DATABASE_URL }} \
+              -e NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=${{ secrets.CLERK_PUBLISHABLE_KEY }} \
+              -e CLERK_SECRET_KEY=${{ secrets.CLERK_SECRET_KEY }} \
+              -e CLERK_WEBHOOK_SIGNING_SECRET=${{ secrets.CLERK_WEBHOOK_SIGNING_SECRET }} \
               manabdebnath/echohub:latest
 
       
