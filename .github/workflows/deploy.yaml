@@ -52,6 +52,7 @@ jobs:
               -e NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=${{ secrets.CLERK_PUBLISHABLE_KEY }} \
               -e CLERK_SECRET_KEY=${{ secrets.CLERK_SECRET_KEY }} \
               -e CLERK_WEBHOOK_SIGNING_SECRET=${{ secrets.CLERK_WEBHOOK_SIGNING_SECRET }} \
+              -e NODE_ENV=production \
+              -e HOSTNAME=0.0.0.0 \
               manabdebnath/echohub:latest
-
-      
+              sudo docker exec web-app npx prisma migrate deploy
