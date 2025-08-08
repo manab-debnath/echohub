@@ -15,7 +15,7 @@ const menuList = [
 	{ id: 6, name: "Jobs", link: "/", icon: "job.svg" },
 	{ id: 7, name: "Communities", link: "/", icon: "community.svg" },
 	{ id: 8, name: "Premium", link: "/", icon: "logo.svg" },
-	{ id: 9, name: "Profile", link: `/lamadev`, icon: "profile.svg" },
+	{ id: 9, name: "Profile", link: `/`, icon: "profile.svg" },
 	{ id: 10, name: "More", link: "/", icon: "more.svg" },
 ];
 
