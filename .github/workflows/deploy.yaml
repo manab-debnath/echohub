@@ -38,10 +38,11 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_KEY }}
           script: |
-            sudo docker pull manabdebnath/echohub:latest
-            sudo docker stop web-app || true
-            sudo docker rm web-app || true
-            sudo docker run -d \
+            docker stop web-app || true
+            docker rm web-app || true
+            docker rmi manabdebnath/echohub:latest || true
+            docker pull manabdebnath/echohub:latest
+            docker run -d \
               --name web-app \
               --restart unless-stopped \
               -p 3000:3000 \
@@ -55,4 +56,4 @@ jobs:
               -e NODE_ENV=production \
               -e HOSTNAME=0.0.0.0 \
               manabdebnath/echohub:latest
-              sudo docker exec web-app npx prisma migrate deploy
+              docker exec web-app npx prisma migrate deploy
