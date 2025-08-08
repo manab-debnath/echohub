@@ -3,6 +3,8 @@ import Link from "next/link";
 import React from "react";
 import Socket from "./Socket";
 import Notification from "./Notification";
+import { auth } from "@clerk/nextjs/server";
+import { prisma } from "@/prisma";
 
 const menuList = [
 	{ id: 1, name: "Home", link: "/", icon: "home.svg" },
@@ -17,7 +19,13 @@ const menuList = [
 	{ id: 10, name: "More", link: "/", icon: "more.svg" },
 ];
 
-const LeftBar = () => {
+const LeftBar = async () => {
+	const { userId } = await auth();
+
+	if (!userId) return;
+
+	const user = await prisma.user.findFirst({ where: { id: userId } });
+
 	return (
 		<div className="h-screen sticky top-0 flex flex-col justify-between pt-2 pb-8">
 			{/* LOGO, MENU, BUTTON */}
@@ -41,7 +49,9 @@ const LeftBar = () => {
 								</div>
 							)}
 							<Link
-								href={item.link}
+								href={
+									item.name === "Profile" ? `/${user?.username}` : item.link
+								}
 								className="p-2 rounded-full hover:bg-[#181818] flex items-center gap-4"
 							>
 								<Image
